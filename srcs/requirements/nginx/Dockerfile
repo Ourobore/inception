@@ -4,26 +4,17 @@ FROM alpine:${ALPINE_VERSION}
 
 RUN apk update && apk add --no-cache \
 	nginx \
-	openrc
+	openrc \
+	openssl
 
-<<<<<<< HEAD
-#RUN mkdir -p /run/openrc \
-#	&& touch /run/openrc/softlevel \
-#	&& rc-update add nginx default \
-#	&& mkdir /run/nginx
-
-#EXPOSE 8080
-
-CMD ["nginx", "-g", "daemon off;"]
-=======
 RUN mkdir -p /run/openrc \
 	&& touch /run/openrc/softlevel \
 	&& rc-update add nginx default \
 	&& mkdir /run/nginx
 
-EXPOSE 8080
+RUN openssl req -x509 -nodes -days 365 -newkey rsa:4096 \
+	-keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt
 
-CMD ["nginx", "-g", "daemon off;"]
+#CMD ["nginx", "-g", "daemon off;"]
 
-#ENTRYPOINT ["/bin/sh"]
->>>>>>> ea9f18e9399f774c601455675e460eb69d30edff
+ENTRYPOINT ["/bin/sh"]
