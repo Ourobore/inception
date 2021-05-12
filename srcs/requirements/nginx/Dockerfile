@@ -17,8 +17,8 @@ RUN openssl req -x509 -nodes -days 90 -newkey rsa:4096 \
 	-subj "/C=FR/ST=IdF/L=Paris/O=42/OU=Inception/CN=localhost" 
 	#&& openssl dhparam -out /etc/ssl/certs/nginx-dhkey.pem 4096
 
-COPY srcs/requirements/nginx/config/localhost.conf /etc/nginx/sites-available/localhost
+COPY ./config/localhost.conf /etc/nginx/sites-available/localhost
 
-#CMD ["nginx", "-g", "daemon off;"]
+CMD ["nginx", "-g", "daemon off;"]
 
-ENTRYPOINT ["/bin/sh"]
+#ENTRYPOINT ["/bin/sh"]
