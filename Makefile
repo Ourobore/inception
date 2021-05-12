@@ -4,7 +4,7 @@ all		: $(NAME)
 
 $(NAME)	:
 		  docker build -f srcs/requirements/nginx/Dockerfile -t nginx:inception .
-		  docker run -it --name nginx -p 80:80 nginx:inception
+		  docker run -it --name nginx -p 80:80 -p 443:443 nginx:inception
 
 stop	:
 		  -docker stop nginx

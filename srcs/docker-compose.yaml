@@ -1,0 +1,5 @@
+services:
+  nginx:
+    build: requirements/nginx/Dockerfile
+    ports:
+      - "443:443"
