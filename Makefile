@@ -1,28 +1,33 @@
+ALPINE_VERSION	= $$(grep ALPINE_VERSION srcs/.env | cut -d'=' -f2)
+
+DOCKER_COMPOSE	= docker-compose --project-directory srcs \
+		  		  -f srcs/docker-compose.yaml
+
 NAME	= inception
 
 all		: $(NAME)
 
-$(NAME)	:
-		  docker build -f srcs/requirements/nginx/Dockerfile -t nginx:inception .
-		  docker run -it --name nginx -p 80:80 -p 443:443 nginx:inception
+$(NAME)	: build
 
-#rajouter un make build
+build	:
+		  $(DOCKER_COMPOSE) build 
 
 up		:
-		  docker-compose -f srcs/docker-compose.yaml up -d
+		  $(DOCKER_COMPOSE) up -d
 
 down	:
-		  docker-compose -f srcs/docker-compose.yaml down
+		  $(DOCKER_COMPOSE) down
+
+ps		:
+		  $(DOCKER_COMPOSE) ps
 
 stop	:
-		  -docker stop nginx
+		  $(DOCKER_COMPOSE) stop 
 
-clean	: stop
-		  -docker rm nginx
+clean	:
+		  -docker rmi -f alpine:${ALPINE_VERSION}
+		  -docker rmi -f nginx:inception
 
-fclean	: clean
-		  -docker rmi -f nginx:inception alpine
+re		: clean all
 
-re		: fclean all
-
-.PHONY	: all clean fclean re
+.PHONY	: all build up down stop ps clean re

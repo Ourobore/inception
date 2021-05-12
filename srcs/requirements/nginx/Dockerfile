@@ -1,4 +1,4 @@
-ARG ALPINE_VERSION=3.13
+ARG ALPINE_VERSION
 
 FROM alpine:${ALPINE_VERSION}
 
@@ -17,7 +17,8 @@ RUN openssl req -x509 -nodes -days 90 -newkey rsa:4096 \
 	-subj "/C=FR/ST=IdF/L=Paris/O=42/OU=Inception/CN=localhost" 
 	#&& openssl dhparam -out /etc/ssl/certs/nginx-dhkey.pem 4096
 
-COPY ./config/localhost.conf /etc/nginx/sites-available/localhost
+COPY ./config/localhost.conf /etc/nginx/sites-available/default
+COPY ./config/localhost.conf /etc/nginx/sites-enabled/default
 
 CMD ["nginx", "-g", "daemon off;"]
 
