@@ -28,6 +28,6 @@ clean	:
 		  -docker rmi -f alpine:${ALPINE_VERSION}
 		  -docker rmi -f nginx:inception
 
-re		: clean all
+re		: clean build
 
 .PHONY	: all build up down stop ps clean re
