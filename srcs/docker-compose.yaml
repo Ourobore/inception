@@ -1,5 +1,7 @@
 version: "3.5"
+
 services:
+
   nginx:
     build:
       context: requirements/nginx
@@ -11,3 +13,19 @@ services:
     container_name: nginx
     ports:
       - 443:443
+  
+  wordpress:
+    build:
+      context: requirements/wordpress
+      dockerfile: Dockerfile
+      args:
+        ALPINE_VERSION: ${ALPINE_VERSION}
+        WORDPRESS_VERSION: ${WORDPRESS_VERSION}
+      image: wordpress:inception
+      container_name: wordpress
+      #ports:
+      volumes:
+        wordpress_files: /var/www/wordpress
+
+volumes:
+  wordpress_files:
