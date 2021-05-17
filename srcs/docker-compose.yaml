@@ -9,23 +9,44 @@ services:
       args:
         ALPINE_VERSION: ${ALPINE_VERSION}
         NGINX_VERSION: ${NGINX_VERSION}
+    environment: 
+      LOGIN: ${LOGIN}
     image: nginx:inception
     container_name: nginx
     ports:
-      - 443:443
+      - "443:443"
+      - "9000"
+    networks:
+      - inception
+    volumes:
+      - wordpress_files:/var/www/wordpress
   
-#  wordpress:
-#    build:
-#     context: requirements/wordpress
-#      dockerfile: Dockerfile
-#      args:
-#        ALPINE_VERSION: ${ALPINE_VERSION}
-#        WORDPRESS_VERSION: ${WORDPRESS_VERSION}
-#      image: wordpress:inception
-#      container_name: wordpress
-      #ports:
-#      volumes:
-#        wordpress_files: /var/www/wordpress
+  wordpress:
+    build:
+      context: requirements/wordpress
+      dockerfile: Dockerfile
+      args:
+        ALPINE_VERSION: ${ALPINE_VERSION}
+        WORDPRESS_VERSION: ${WORDPRESS_VERSION}
+    image: wordpress:inception
+    container_name: wordpress
+    ports: 
+      - "9000"
+    networks:
+      - inception
+    volumes:
+      - wordpress_files:/var/www/wordpress
 
-#volumes:
-#  wordpress_files:
+networks:
+  inception:
+    name: inception
+    driver: bridge
+
+volumes:
+  wordpress_files:
+    name: wordpress_files
+  #  driver: local
+  #  driver_opts:
+  #    type: none
+  #    o: bind
+  #    device: /home/${LOGIN}/data

@@ -11,7 +11,7 @@ RUN apk update && apk add --no-cache \
 RUN mkdir -p /run/openrc \
 	&& touch /run/openrc/softlevel \
 	&& rc-update add nginx default \
-	&& mkdir -p /run/nginx /etc/nginx/sites-enabled
+	&& mkdir -p /run/nginx /etc/nginx/sites-enabled /var/www
 
 RUN openssl req -x509 -nodes -days 90 -newkey rsa:4096 \
 	-keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt \
@@ -22,6 +22,8 @@ COPY config/nginx.conf /etc/nginx/
 COPY config/localhost.conf /etc/nginx/sites-available/localhost
 
 RUN ln -s /etc/nginx/sites-available/localhost /etc/nginx/sites-enabled/
+
+EXPOSE 443
 
 CMD ["nginx", "-g", "daemon off;"]
 

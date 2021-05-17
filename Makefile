@@ -37,6 +37,7 @@ version	: ## Print services versions
 		  @echo "wordpress version - ${WORDPRESS_VERSION}"
 
 setup	: ## Update docker-compose installation
+		  sudo service nginx stop
 		  sudo usermod -aG docker $$USER
 		  sudo curl -L "https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-$$(uname -s)-$$(uname -m)" -o /usr/local/bin/docker-compose
 		  sudo chmod +x /usr/local/bin/docker-compose
@@ -60,6 +61,7 @@ stop	: ## Stop services
 clean	: ## Remove docker images
 		  -docker rmi -f alpine:${ALPINE_VERSION}
 		  -docker rmi -f nginx:inception
+		  -docker rmi -f wordpress:inception
 
 re		: clean build
 
