@@ -62,6 +62,7 @@ clean	: ## Remove docker images
 		  -docker rmi -f alpine:${ALPINE_VERSION}
 		  -docker rmi -f nginx:inception
 		  -docker rmi -f wordpress:inception
+		  -docker volume rm wordpress_files
 
 re		: clean build
 
