@@ -5,36 +5,26 @@ FROM alpine:${ALPINE_VERSION}
 RUN apk update && apk add --no-cache \
 	curl \
 	openrc \
-	php \
-	php-common \
     php-fpm \
-    php-pdo \
-    php-opcache \
-    php-zip \
-    php-phar \
-    php-iconv \
-    php-cli \
     php-curl \
-    php-openssl \
-    php-mbstring \
-    php-tokenizer \
+    php-dom \
+    php-exif \
     php-fileinfo \
     php-json \
+    php-mbstring \
+    php-mysqli \
+    php-sodium \
+    php-openssl \
     php-xml \
-    php-xmlwriter \
-    php-simplexml \
-    php-dom \
-    php-pdo_mysql \
-    php-pdo_sqlite \
-    php-tokenizer \
-    php7-pecl-redis
+    php-zip
 
 ARG WORDPRESS_VERSION
 RUN curl -Lo wordpress_archive https://wordpress.org/wordpress-${WORDPRESS_VERSION}.tar.gz \
 	&& tar -xzvf wordpress_archive \
 	&& rm wordpress_archive \ 
 	&& mkdir -p /var/www \
-	&& mv wordpress /var/www
+	&& mv wordpress /var/www \
+    && echo "extension=mysqli" >> /etc/php7/php.ini
 
 RUN mkdir -p /run/openrc \
 	&& touch /run/openrc/softlevel \
@@ -42,5 +32,7 @@ RUN mkdir -p /run/openrc \
 	&& mkdir -p /run/php-fmp7
 
 COPY config/www.conf /etc/php7/php-fpm.d/
+
+COPY config/wp\-config.php /var/www/wordpress/
 
 CMD ["php-fpm7", "-F"]

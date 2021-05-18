@@ -23,8 +23,4 @@ COPY config/localhost.conf /etc/nginx/sites-available/localhost
 
 RUN ln -s /etc/nginx/sites-available/localhost /etc/nginx/sites-enabled/
 
-EXPOSE 443
-
 CMD ["nginx", "-g", "daemon off;"]
-
-#ENTRYPOINT ["/bin/sh"]
