@@ -1,7 +1,10 @@
 version: "3.5"
 
-services:
 
+services:
+#########################
+########  Nginx  ########
+#########################
   nginx:
     depends_on:
       - wordpress
@@ -17,13 +20,16 @@ services:
     container_name: nginx
     ports:
       - "443:443"
-    expose:
-      - "9000"
+    #expose:
+    #  - "9000"
     networks:
       - inception
     volumes:
       - wordpress_files:/var/www/wordpress
-  
+
+##########################
+######  Wordpress  #######
+##########################
   wordpress:
     depends_on:
       - mariadb
@@ -35,28 +41,40 @@ services:
         WORDPRESS_VERSION: ${WORDPRESS_VERSION}
     image: wordpress:inception
     container_name: wordpress
-    expose: 
-      - "9000"
-      - "3306"
+    environment:
+      WORDPRESS_DB_HOST: mariadb
+      WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
+      WORDPRESS_DB_USER: ${MYSQL_USER}
+      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
+    #expose: 
+    #  - "9000"
+    #  - "3306"
     networks:
       - inception
     volumes:
       - wordpress_files:/var/www/wordpress
 
+#########################
+#######  MariaDB  #######
+#########################
   mariadb:
     #build:
     #  context: requirements/mariadb
     #  dockerfile: Dockerfile
     #  args:
-    #   ALPINE_VERSION: ${ALPINE_VERSION}
+    #    ALPINE_VERSION: ${ALPINE_VERSION}
     #    MARIADB_VERSION: ${MARIADB_VERSION}
+    #image: mariadb:inception
     image: mariadb:10.6
     container_name: mariadb
     environment:
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_ROOT_PASSWORD={MYSQL_ROOT_PASSWORD}
-    expose:
-      - "3306"
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    #restart: always
+    #expose:
+    #  - "3306"
     networks:
       - inception
     volumes:

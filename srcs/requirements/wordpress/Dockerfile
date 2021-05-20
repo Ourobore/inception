@@ -23,8 +23,7 @@ RUN curl -Lo wordpress_archive https://wordpress.org/wordpress-${WORDPRESS_VERSI
 	&& tar -xzvf wordpress_archive \
 	&& rm wordpress_archive \ 
 	&& mkdir -p /var/www \
-	&& mv wordpress /var/www \
-    && echo "extension=mysqli" >> /etc/php7/php.ini
+	&& mv wordpress /var/www
 
 RUN mkdir -p /run/openrc \
 	&& touch /run/openrc/softlevel \

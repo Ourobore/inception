@@ -3,6 +3,11 @@ ALPINE_VERSION		= $$(grep ALPINE_VERSION srcs/.env | cut -d'=' -f2)
 NGINX_VERSION		= $$(grep NGINX_VERSION srcs/.env | cut -d'=' -f2)
 WORDPRESS_VERSION	= $$(grep WORDPRESS_VERSION srcs/.env | cut -d'=' -f2)
 
+MYSQL_DATABASE		= $$(grep MYSQL_DATABASE srcs/.env | cut -d'=' -f2)
+MYSQL_ROOT_PASSWORD	= $$(grep MYSQL_ROOT_PASSWORD srcs/.env | cut -d'=' -f2)
+MYSQL_USER			= $$(grep MYSQL_USER srcs/.env | cut -d'=' -f2)
+MYSQL_PASSWORD		= $$(grep MYSQL_PASSWORD srcs/.env | cut -d'=' -f2)
+
 DOCKER_COMPOSE	= docker-compose --project-directory srcs \
 		  		  -f srcs/docker-compose.yaml
 
@@ -16,6 +21,7 @@ help	: ## Print command manual
 		  @echo "Makefile commands:"
 		  @echo ""
 		  @echo "version:	Show services versions"
+		  @echo "variable:	Show project variables"
 		  @echo "setup:		Update docker-compose installation"
 		  @echo ""
 		  @echo "build:		Build the project with docker-compose build"
@@ -24,7 +30,9 @@ help	: ## Print command manual
 		  @echo "ps:		Show running services with docker-compose ps"
 		  @echo "stop:		Stop running services with docker-compose stop"
 		  @echo ""
-		  @echo "clean:		Remove project build images"
+		  @echo "ilean:		Remove project build images"
+		  @echo "vlean:		Remove project volumes"
+		  @echo "clean:		Remove project images and volumes"
 		  @echo "re:		Run clean and build command to re make the project from scratch"
 
 
@@ -35,6 +43,14 @@ version	: ## Print services versions
 		  @echo "alpine version - ${ALPINE_VERSION}"
 		  @echo "nginx version - ${NGINX_VERSION}"
 		  @echo "wordpress version - ${WORDPRESS_VERSION}"
+
+variable: ## Print project variables
+		  @echo "Project variables"
+		  @echo ""
+		  @echo "MYSQL_DATABASE - ${MYSQL_DATABASE}"
+		  @echo "MYSQL_ROOT_PASSWORD - ${MYSQL_ROOT_PASSWORD}"
+		  @echo "MYSQL_USER - ${MYSQL_USER}"
+		  @echo "MYSQL_PASSWORD - ${MYSQL_PASSWORD}"
 
 setup	: ## Update docker-compose installation
 		  sudo service nginx stop
@@ -58,13 +74,18 @@ ps		: ## Show services
 stop	: ## Stop services
 		  $(DOCKER_COMPOSE) stop 
 
-clean	: ## Remove docker images
+iclean	: ## Remove docker images
 		  -docker rmi -f alpine:${ALPINE_VERSION}
 		  -docker rmi -f nginx:inception
 		  -docker rmi -f wordpress:inception
 		  -docker rmi -f mariadb:inception
+
+vclean	: ## Remove docker volumes
 		  -docker volume rm wordpress_files
+		  -docker volume rm wordpress_database
+
+clean	: iclean vclean
 
 re		: clean build
 
-.PHONY	: all build help version setup up down stop ps clean re
+.PHONY	: all build help version setup up down stop ps iclean vclean clean re
