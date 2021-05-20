@@ -31,7 +31,6 @@ RUN mkdir -p /run/openrc \
 	&& mkdir -p /run/php-fmp7
 
 COPY config/www.conf /etc/php7/php-fpm.d/
-
 COPY config/wp\-config.php /var/www/wordpress/
 
 CMD ["php-fpm7", "-F"]

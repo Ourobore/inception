@@ -2,58 +2,44 @@ ARG ALPINE_VERSION
 
 FROM alpine:${ALPINE_VERSION}
 
-COPY config/docker-entrypoint.sh /
-
 ARG MARIADB_VERSION
 RUN apk update && apk add --no-cache \
+    openrc \
+    mariadb-openrc \
     mariadb=${MARIADB_VERSION} \
-    mariadb-client=${MARIADB_VERSION} \
-    && mysql_install_db --user=root --datadir=/var/lib/mysql
-    #openrc \
-   # && mkdir -p /run/mysqld \
-    #&& chmod +x docker-entrypoint.sh \
-    #&& openrc default \
-    #&& rc-service mariadb setup \
-    #&& rc-status default \
-    #&& rc-service mariadb start \
-    #&& mariadb -e "CREATE DATABASE ${MYSQL_DATABASE}" \
-    #&& mariadb -e "CREATE USER '${MYSQL_USER}'@'mariadb' IDENTIFIED BY '${MYSQL_PASSWORD}';" \
-    #&& mariadb -e "GRANT ALL PRIVILEGES ON *.* TO '${MYSQL_USER}'@'mariadb' IDENTIFIED BY '${MYSQL_PASSWORD}';"
-    #&& rc-service mariadb stop
-    #&& mkdir -p /run/mysqld /etc/mysql /var/log/mysql \
-    #&& chown -R mysql:mysql /etc/mysql /var/log/mysql
-    #mariadb-openrc \
-    #openrc \
-    #&& mkdir -p /run/mariadb 
-    #&& /etc/init.d/mysql setup \
-    #&& /etc/init.d/mysql start
+    mariadb-client=${MARIADB_VERSION}
 
+COPY config/db-setup.sh /
+
+ARG MYSQL_DATABASE
+ARG MYSQL_ROOT_PASSWORD
+ARG MYSQL_USER
+ARG MYSQL_PASSWORD
+ARG MYSQL_ADMIN
+ARG MYSQL_ADMIN_PASSWORD
+
+RUN mkdir -p /run/openrc \
+	&& touch /run/openrc/softlevel \
+	&& rc-update add mariadb default \
+	&& mkdir -p /run/mariadb \
+    && rc-status \
+    && rc-service mariadb setup \
+    && rc-service mariadb start \
+    && sh db-setup.sh \
+    && mariadb -u root -password=$MYSQL_ROOT_PASSWORD < db-setup.sql \
+    && rm db-setup.sql db-setup.sh
+    #&& mariadb -e "CREATE USER '$MYSQL_USER'@'mariadb' IDENTIFIED BY '$MYSQL_PASSWORD';" \
+    #&& mariadb -e "CREATE DATABASE $MYSQL_DATABASE;" \
+    #&& mariadb -e "GRANT ALL PRIVILEGES ON $MYSQL_DATABASE.* TO '$MYSQL_USER'@'mariadb' IDENTIFIED BY '$MYSQL_PASSWORD';"
+
+#COPY config/mariadb-server.cnf /etc/my.cnf.d/
 
 #RUN mysql_install_db --user=root --datadir=/var/lib/mysql \
 #    && mkdir -p run/mysqld \
 #    && /usr/bin/mysqld --datadir=/var/lib/mysql \
 #    && chown -R mysql:mysql /var/lib/mysql
 
-#RUN mkdir -p /run/openrc \
-#	&& touch /run/openrc/softlevel \
-#	&& rc-update add mariadb default \
-#	&& mkdir -p /run/mariadb
-
-#RUN rc-service mariadb start \
-#    && mysql_install_db --user=root --datadir=/var/lib/mysql
-
-#RUN rc-status default \
- #   && rc-service mariadb start \
- #   && mysql -e "CREATE USER '${MYSQL_USER}'@'mariadb' IDENTIFIED BY '${MYSQL_PASSWORD}';" \
-#	&& mysql -e "CREATE DATABASE ${MYSQL_DATABASE}" \
-#	&& mysql -e "GRANT ALL PRIVILEGES ON *.* TO '${MYSQL_USER}'@'mariadb' IDENTIFIED BY '${MYSQL_PASSWORD}';"
-
-#RUN mysql_install_db --user=root --datadir=/var/lib/mysql
-
-
 #CMD ["tail", "-f"]
-
-#ENTRYPOINT ["sh", "./docker-entrypoint.sh"]
 
 CMD ["/usr/bin/mysqld_safe", "--user=root"]
 
