@@ -27,11 +27,8 @@ RUN mkdir -p /run/openrc \
     && sh db-setup.sh \
     && mariadb -u root -password=$MYSQL_ROOT_PASSWORD < db-setup.sql \
     && rm db-setup.sql db-setup.sh
-    #&& mariadb -e "CREATE USER '$MYSQL_USER'@'mariadb' IDENTIFIED BY '$MYSQL_PASSWORD';" \
-    #&& mariadb -e "CREATE DATABASE $MYSQL_DATABASE;" \
-    #&& mariadb -e "GRANT ALL PRIVILEGES ON $MYSQL_DATABASE.* TO '$MYSQL_USER'@'mariadb' IDENTIFIED BY '$MYSQL_PASSWORD';"
 
-#COPY config/mariadb-server.cnf /etc/my.cnf.d/
+COPY config/mariadb-server.cnf /etc/my.cnf.d/
 
 #RUN mysql_install_db --user=root --datadir=/var/lib/mysql \
 #    && mkdir -p run/mysqld \
