@@ -23,8 +23,6 @@
 #define( 'DB_NAME', 'wordpress_db' );
 define( 'DB_NAME', getenv('WORDPRESS_DB_NAME') );
 
-#echo DB_NAME;
-
 /** MySQL database username */
 #define( 'DB_USER', 'lchapren' );
 define( 'DB_USER', getenv('WORDPRESS_DB_USER') );
@@ -42,6 +40,8 @@ define( 'DB_CHARSET', 'utf8' );
 
 /** The database collate type. Don't change this if in doubt. */
 define( 'DB_COLLATE', '' );
+
+mysqli_connect("DB_HOST", "DB_USER", "DB_PASSWORD", "DB_NAME", "3306");
 
 /**#@+
  * Authentication unique keys and salts.

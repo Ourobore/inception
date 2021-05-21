@@ -23,4 +23,7 @@ COPY config/localhost.conf /etc/nginx/sites-available/localhost
 
 RUN ln -s /etc/nginx/sites-available/localhost /etc/nginx/sites-enabled/
 
+RUN ln -sf /dev/stdout /var/log/nginx/access.log \
+	&& ln -sf /dev/stderr /var/log/nginx/error.log
+
 CMD ["nginx", "-g", "daemon off;"]

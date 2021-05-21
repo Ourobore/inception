@@ -20,8 +20,9 @@ services:
     container_name: nginx
     ports:
       - "443:443"
-    #expose:
-    #  - "9000"
+    restart: always
+    expose:
+      - "9000"
     networks:
       - inception
     volumes:
@@ -44,8 +45,9 @@ services:
     environment:
       WORDPRESS_DB_HOST: mariadb
       WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
-      WORDPRESS_DB_USER: ${MYSQL_ADMIN}
-      WORDPRESS_DB_PASSWORD: ${MYSQL_ADMIN_PASSWORD}
+      WORDPRESS_DB_USER: ${MYSQL_USER}
+      WORDPRESS_DB_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    restart: always
     expose: 
       - "9000"
       - "3306"
@@ -68,8 +70,6 @@ services:
         MYSQL_DATABASE: ${MYSQL_DATABASE}
         MYSQL_USER: ${MYSQL_USER}
         MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-        MYSQL_ADMIN: ${MYSQL_ADMIN}
-        MYSQL_ADMIN_PASSWORD: ${MYSQL_ADMIN_PASSWORD}
     image: mariadb:inception
     #image: mariadb:10.6
     container_name: mariadb
@@ -78,9 +78,9 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_ADMIN: ${MYSQL_ADMIN}
-      MYSQL_ADMIN_PASSWORD: ${MYSQL_ADMIN_PASSWORD}
-    #restart: always
+      #MYSQL_ADMIN: ${MYSQL_ADMIN}
+      #MYSQL_ADMIN_PASSWORD: ${MYSQL_ADMIN_PASSWORD}
+    restart: always
     expose:
       - "3306"
     networks:

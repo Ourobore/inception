@@ -10,13 +10,12 @@ RUN apk update && apk add --no-cache \
     mariadb-client=${MARIADB_VERSION}
 
 COPY config/db-setup.sh /
+COPY config/mariadb-server.cnf /etc/my.cnf.d/
 
 ARG MYSQL_DATABASE
 ARG MYSQL_ROOT_PASSWORD
 ARG MYSQL_USER
 ARG MYSQL_PASSWORD
-ARG MYSQL_ADMIN
-ARG MYSQL_ADMIN_PASSWORD
 
 RUN mkdir -p /run/openrc \
 	&& touch /run/openrc/softlevel \
@@ -41,6 +40,6 @@ RUN mkdir -p /run/openrc \
 
 #CMD ["tail", "-f"]
 
-CMD ["/usr/bin/mysqld_safe", "--user=root"]
+CMD ["/usr/bin/mysqld", "--user=root", "--datadir=/var/lib/mysql/"]
 
 #cd '/usr' ; /usr/bin/mysqld_safe --datadir='/var/lib/mysql'
