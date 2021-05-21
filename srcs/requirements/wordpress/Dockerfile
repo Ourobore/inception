@@ -33,4 +33,7 @@ RUN mkdir -p /run/openrc \
 COPY config/www.conf /etc/php7/php-fpm.d/
 COPY config/wp\-config.php /var/www/wordpress/
 
-CMD ["php-fpm7", "-F"]
+RUN ln -sf /dev/stderr /var/log/fpm-access.log \
+    && ln -sf /dev/stderr /var/log/fpm-error.log
+
+CMD ["php-fpm7", "--nodaemonize"]

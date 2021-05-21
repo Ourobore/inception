@@ -44,11 +44,11 @@ services:
     environment:
       WORDPRESS_DB_HOST: mariadb
       WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
-      WORDPRESS_DB_USER: ${MYSQL_ADMIN}
-      WORDPRESS_DB_PASSWORD: ${MYSQL_ADMIN_PASSWORD}
+      WORDPRESS_DB_USER: ${MYSQL_USER}
+      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
     expose: 
       - "9000"
-      - "3306"
+    # - "3306"
     networks:
       - inception
     volumes:
@@ -80,7 +80,7 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_ADMIN: ${MYSQL_ADMIN}
       MYSQL_ADMIN_PASSWORD: ${MYSQL_ADMIN_PASSWORD}
-    #restart: always
+    restart: always
     expose:
       - "3306"
     networks:
