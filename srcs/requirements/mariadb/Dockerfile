@@ -37,6 +37,6 @@ COPY config/mariadb-server.cnf /etc/my.cnf.d/
 
 #CMD ["tail", "-f"]
 
-CMD ["/usr/bin/mysqld", "--user=root", "--datadir=/var/lib/mysql/"]
+CMD ["/usr/bin/mysqld_safe", "--user=root", "--datadir=/var/lib/mysql/"]
 
 #cd '/usr' ; /usr/bin/mysqld_safe --datadir='/var/lib/mysql'

@@ -18,6 +18,8 @@ all		: help
 $(NAME)	: build
 
 help	: ## Print command manual
+		  @echo "Project by lchapren@student.42.fr"
+		  @echo ""
 		  @echo "Makefile commands:"
 		  @echo ""
 		  @echo "version:	Show services versions"

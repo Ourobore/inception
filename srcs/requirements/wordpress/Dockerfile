@@ -20,7 +20,7 @@ RUN apk update && apk add --no-cache \
 
 ARG WORDPRESS_VERSION
 RUN curl -Lo wordpress_archive https://wordpress.org/wordpress-${WORDPRESS_VERSION}.tar.gz \
-	&& tar -xzvf wordpress_archive \
+	&& tar -xzf wordpress_archive \
 	&& rm wordpress_archive \ 
 	&& mkdir -p /var/www \
 	&& mv wordpress /var/www

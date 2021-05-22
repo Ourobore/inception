@@ -14,15 +14,18 @@ services:
       args:
         ALPINE_VERSION: ${ALPINE_VERSION}
         NGINX_VERSION: ${NGINX_VERSION}
+        LOGIN: ${LOGIN}
     environment: 
       LOGIN: ${LOGIN}
     image: nginx:inception
     container_name: nginx
+    dns: 127.0.0.1
+    dns_search: 42.fr
+    extra_hosts: 
+      - bipbip:127.0.0.1
     ports:
       - "443:443"
     restart: always
-    expose:
-      - "9000"
     networks:
       - inception
     volumes:
@@ -43,13 +46,14 @@ services:
     image: wordpress:inception
     container_name: wordpress
     environment:
+      WP_HOME: ${WP_HOME}
+      WP_SITEURL: ${WP_SITEURL}
       WORDPRESS_DB_HOST: mariadb
       WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
       WORDPRESS_DB_USER: ${MYSQL_USER}
       WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
     expose: 
       - "9000"
-    # - "3306"
     networks:
       - inception
     volumes:
