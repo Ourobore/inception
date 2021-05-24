@@ -2,6 +2,7 @@ ARG ALPINE_VERSION
 
 FROM alpine:${ALPINE_VERSION}
 
+# Installing services
 ARG MARIADB_VERSION
 RUN apk update && apk add --no-cache \
     openrc \
@@ -9,6 +10,7 @@ RUN apk update && apk add --no-cache \
     mariadb=${MARIADB_VERSION} \
     mariadb-client=${MARIADB_VERSION}
 
+# Database setup script and mariadb config
 COPY config/db-setup.sh /
 COPY config/mariadb-server.cnf /etc/my.cnf.d/
 
@@ -17,6 +19,7 @@ ARG MYSQL_ROOT_PASSWORD
 ARG MYSQL_USER
 ARG MYSQL_PASSWORD
 
+# Setting up the database
 RUN mkdir -p /run/openrc \
 	&& touch /run/openrc/softlevel \
 	&& rc-update add mariadb default \
@@ -28,15 +31,7 @@ RUN mkdir -p /run/openrc \
     && mariadb -u root -password=$MYSQL_ROOT_PASSWORD < db-setup.sql \
     && rm db-setup.sql db-setup.sh
 
-COPY config/mariadb-server.cnf /etc/my.cnf.d/
+# Enabling mysqld logging
+RUN ln -sf /dev/stderr /var/lib/mysql/$(hostname).err
 
-#RUN mysql_install_db --user=root --datadir=/var/lib/mysql \
-#    && mkdir -p run/mysqld \
-#    && /usr/bin/mysqld --datadir=/var/lib/mysql \
-#    && chown -R mysql:mysql /var/lib/mysql
-
-#CMD ["tail", "-f"]
-
-CMD ["/usr/bin/mysqld_safe", "--user=root", "--datadir=/var/lib/mysql/", "--general-log-file=/dev/stderr"]
-
-#cd '/usr' ; /usr/bin/mysqld_safe --datadir='/var/lib/mysql'
+CMD ["/usr/bin/mysqld", "--user=root", "--datadir=/var/lib/mysql/"]
