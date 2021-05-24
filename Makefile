@@ -94,8 +94,8 @@ vclean	: ## Remove docker volumes
 		  -docker volume rm wordpress_database
 
 clean	: iclean vclean
-		  sudo rm -rf /home/$(LOGIN)/data
-		  sudo userdel lchapren
+		  -sudo rm -rf /home/$(LOGIN)/data
+		  -sudo userdel lchapren
 
 re		: clean build
 

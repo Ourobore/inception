@@ -46,8 +46,6 @@ services:
     image: wordpress:inception
     container_name: wordpress
     environment:
-      #WP_HOME: ${WP_HOME}
-      #WP_SITEURL: ${WP_SITEURL}
       WORDPRESS_DB_HOST: mariadb
       WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
       WORDPRESS_DB_USER: ${MYSQL_USER}
@@ -74,6 +72,8 @@ services:
         MYSQL_DATABASE: ${MYSQL_DATABASE}
         MYSQL_USER: ${MYSQL_USER}
         MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+        MYSQL_ADMIN: ${MYSQL_ADMIN}
+        MYSQL_ADMIN_PASSWORD: ${MYSQL_ADMIN_PASSWORD}
     image: mariadb:inception
     container_name: mariadb
     environment:
@@ -81,8 +81,8 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      #MYSQL_ADMIN: ${MYSQL_ADMIN}
-      #MYSQL_ADMIN_PASSWORD: ${MYSQL_ADMIN_PASSWORD}
+      MYSQL_ADMIN: ${MYSQL_ADMIN}
+      MYSQL_ADMIN_PASSWORD: ${MYSQL_ADMIN_PASSWORD}
     restart: always
     expose:
       - "3306"
