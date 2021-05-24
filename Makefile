@@ -60,16 +60,15 @@ variable: ## Print project variables
 		  @echo "MYSQL_PASSWORD - $(MYSQL_PASSWORD)"
 
 setup	: ## Update docker-compose installation
-		  -sudo adduser $(LOGIN) -G docker
-		  #su $(LOGIN)
-		  sudo service nginx stop
+		  -sudo adduser $(LOGIN)
+		  sudo usermod -aG docker $(LOGIN)
 		  sudo usermod -aG docker $$USER
+		  sudo service nginx stop
 		  sudo curl -L "https://github.com/docker/compose/releases/download/$(COMPOSE_VERSION)/docker-compose-$$(uname -s)-$$(uname -m)" -o /usr/local/bin/docker-compose
 		  sudo chmod +x /usr/local/bin/docker-compose
-		  #sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 
 build	: ## Build the project with docker-compose
-		  mkdir -p $(WORDPRESS_FILES) $(WORDPRESS_DATABASE)
+		  sudo mkdir -p $(WORDPRESS_FILES) $(WORDPRESS_DATABASE)
 		  $(DOCKER_COMPOSE) build 
 
 up		: ## Starts services containers
@@ -95,7 +94,8 @@ vclean	: ## Remove docker volumes
 		  -docker volume rm wordpress_database
 
 clean	: iclean vclean
-		  rm -rf $(WORDPRESS_FILES) $(WORDPRESS_DATABASE)
+		  sudo rm -rf /home/$(LOGIN)/data
+		  sudo userdel lchapren
 
 re		: clean build
 

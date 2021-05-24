@@ -46,8 +46,8 @@ services:
     image: wordpress:inception
     container_name: wordpress
     environment:
-      WP_HOME: ${WP_HOME}
-      WP_SITEURL: ${WP_SITEURL}
+      #WP_HOME: ${WP_HOME}
+      #WP_SITEURL: ${WP_SITEURL}
       WORDPRESS_DB_HOST: mariadb
       WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
       WORDPRESS_DB_USER: ${MYSQL_USER}
@@ -103,11 +103,11 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: /home/user42/data/wordpress_files
+      device: /home/${LOGIN}/data/wordpress_files
   wordpress_database:
     name: wordpress_database
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /home/user42/data/wordpress_database
+      device: /home/${LOGIN}/data/wordpress_database
