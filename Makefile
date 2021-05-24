@@ -8,8 +8,13 @@ MYSQL_ROOT_PASSWORD	= $$(grep MYSQL_ROOT_PASSWORD srcs/.env | cut -d'=' -f2)
 MYSQL_USER			= $$(grep MYSQL_USER srcs/.env | cut -d'=' -f2)
 MYSQL_PASSWORD		= $$(grep MYSQL_PASSWORD srcs/.env | cut -d'=' -f2)
 
-DOCKER_COMPOSE	= docker-compose --project-directory srcs \
-		  		  -f srcs/docker-compose.yaml
+LOGIN				= $$(grep LOGIN srcs/.env | cut -d'=' -f2)
+
+WORDPRESS_FILES		= /home/$(LOGIN)/data/wordpress_files
+WORDPRESS_DATABASE	= /home/$(LOGIN)/data/wordpress_database
+
+DOCKER_COMPOSE		= docker-compose --project-directory srcs \
+		  		  		-f srcs/docker-compose.yaml
 
 NAME	= inception
 
@@ -41,27 +46,30 @@ help	: ## Print command manual
 version	: ## Print services versions
 		  @echo "Services versions"
 		  @echo ""
-		  @echo "compose version - ${COMPOSE_VERSION}"
-		  @echo "alpine version - ${ALPINE_VERSION}"
-		  @echo "nginx version - ${NGINX_VERSION}"
-		  @echo "wordpress version - ${WORDPRESS_VERSION}"
+		  @echo "compose version - $(COMPOSE_VERSION)"
+		  @echo "alpine version - $(ALPINE_VERSION)"
+		  @echo "nginx version - $(NGINX_VERSION)"
+		  @echo "wordpress version - $(WORDPRESS_VERSION)"
 
 variable: ## Print project variables
 		  @echo "Project variables"
 		  @echo ""
-		  @echo "MYSQL_DATABASE - ${MYSQL_DATABASE}"
-		  @echo "MYSQL_ROOT_PASSWORD - ${MYSQL_ROOT_PASSWORD}"
-		  @echo "MYSQL_USER - ${MYSQL_USER}"
-		  @echo "MYSQL_PASSWORD - ${MYSQL_PASSWORD}"
+		  @echo "MYSQL_DATABASE - $(MYSQL_DATABASE)"
+		  @echo "MYSQL_ROOT_PASSWORD - $(MYSQL_ROOT_PASSWORD)"
+		  @echo "MYSQL_USER - $(MYSQL_USER)"
+		  @echo "MYSQL_PASSWORD - $(MYSQL_PASSWORD)"
 
 setup	: ## Update docker-compose installation
+		  -sudo adduser $(LOGIN) -G docker
+		  #su $(LOGIN)
 		  sudo service nginx stop
 		  sudo usermod -aG docker $$USER
-		  sudo curl -L "https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-$$(uname -s)-$$(uname -m)" -o /usr/local/bin/docker-compose
+		  sudo curl -L "https://github.com/docker/compose/releases/download/$(COMPOSE_VERSION)/docker-compose-$$(uname -s)-$$(uname -m)" -o /usr/local/bin/docker-compose
 		  sudo chmod +x /usr/local/bin/docker-compose
 		  #sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 
 build	: ## Build the project with docker-compose
+		  mkdir -p $(WORDPRESS_FILES) $(WORDPRESS_DATABASE)
 		  $(DOCKER_COMPOSE) build 
 
 up		: ## Starts services containers
@@ -77,7 +85,7 @@ stop	: ## Stop services
 		  $(DOCKER_COMPOSE) stop 
 
 iclean	: ## Remove docker images
-		  -docker rmi -f alpine:${ALPINE_VERSION}
+		  -docker rmi -f alpine:$(ALPINE_VERSION)
 		  -docker rmi -f nginx:inception
 		  -docker rmi -f wordpress:inception
 		  -docker rmi -f mariadb:inception
@@ -87,6 +95,7 @@ vclean	: ## Remove docker volumes
 		  -docker volume rm wordpress_database
 
 clean	: iclean vclean
+		  rm -rf $(WORDPRESS_FILES) $(WORDPRESS_DATABASE)
 
 re		: clean build
 
