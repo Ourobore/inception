@@ -20,11 +20,13 @@ services:
     image: nginx:inception
     container_name: nginx
     #dns: 127.0.0.1
+    #hostname: lchapren.42.fr
     #dns_search: 42.fr
-    #extra_hosts: 
-    #  - bipbip:127.0.0.1
+    extra_hosts: 
+      - lchapren.42.fr:127.0.0.1
     restart: always
     ports:
+      - "80:80"
       - "443:443"
     networks:
       - inception
