@@ -18,7 +18,7 @@ RUN mkdir -p /run/openrc \
 # Creating SSL certificate
 RUN openssl req -x509 -nodes -days 90 -newkey rsa:4096 \
 	-keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt \
-	-subj "/C=FR/ST=IdF/L=Paris/O=42/OU=Inception/CN=localhost" 
+	-subj "/C=FR/ST=IdF/L=Paris/O=42/OU=Inception/CN=localhost"
 	#&& openssl dhparam -out /etc/ssl/certs/nginx-dhkey.pem 4096
 
 # Enabling virtual hosts
