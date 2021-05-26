@@ -1,14 +1,21 @@
-COMPOSE_VERSION 	= $$(grep COMPOSE_VERSION srcs/.env | cut -d'=' -f2)
-ALPINE_VERSION		= $$(grep ALPINE_VERSION srcs/.env | cut -d'=' -f2)
-NGINX_VERSION		= $$(grep NGINX_VERSION srcs/.env | cut -d'=' -f2)
-WORDPRESS_VERSION	= $$(grep WORDPRESS_VERSION srcs/.env | cut -d'=' -f2)
+COMPOSE_VERSION 	= $$(grep COMPOSE_VERSION= srcs/.env | cut -d'=' -f2)
+ALPINE_VERSION		= $$(grep ALPINE_VERSION= srcs/.env | cut -d'=' -f2)
+NGINX_VERSION		= $$(grep NGINX_VERSION= srcs/.env | cut -d'=' -f2)
+WORDPRESS_VERSION	= $$(grep WORDPRESS_VERSION= srcs/.env | cut -d'=' -f2)
+MARIADB_VERSION		= $$(grep MARIADB_VERSION= srcs/.env | cut -d'=' -f2)
 
-MYSQL_DATABASE		= $$(grep MYSQL_DATABASE srcs/.env | cut -d'=' -f2)
-MYSQL_ROOT_PASSWORD	= $$(grep MYSQL_ROOT_PASSWORD srcs/.env | cut -d'=' -f2)
-MYSQL_USER			= $$(grep MYSQL_USER srcs/.env | cut -d'=' -f2)
-MYSQL_PASSWORD		= $$(grep MYSQL_PASSWORD srcs/.env | cut -d'=' -f2)
+MYSQL_DATABASE		= $$(grep MYSQL_DATABASE= srcs/.env | cut -d'=' -f2)
+MYSQL_ROOT_PASSWORD	= $$(grep MYSQL_ROOT_PASSWORD= srcs/.env | cut -d'=' -f2)
+MYSQL_USER			= $$(grep MYSQL_USER= srcs/.env | cut -d'=' -f2)
+MYSQL_PASSWORD		= $$(grep MYSQL_PASSWORD= srcs/.env | cut -d'=' -f2)
+MYSQL_ADMIN			= $$(grep MYSQL_ADMIN= srcs/.env | cut -d'=' -f2)
+MYSQL_ADMIN_PASSWORD= $$(grep MYSQL_ADMIN_PASSWORD= srcs/.env | cut -d'=' -f2)
 
-LOGIN				= $$(grep LOGIN srcs/.env | cut -d'=' -f2)
+WP_ADMIN			= $$(grep WP_ADMIN= srcs/.env | cut -d'=' -f2)
+WP_ADMIN_PASSWORD	= $$(grep WP_ADMIN_PASSWORD= srcs/.env | cut -d'=' -f2)
+WP_ADMIN_EMAIL		= $$(grep WP_ADMIN_EMAIL= srcs/.env | cut -d'=' -f2)
+
+LOGIN				= $$(grep LOGIN= srcs/.env | cut -d'=' -f2)
 
 WORDPRESS_FILES		= /home/$(LOGIN)/data/wordpress_files
 WORDPRESS_DATABASE	= /home/$(LOGIN)/data/wordpress_database
@@ -40,8 +47,8 @@ help	: ## Print command manual
 		  @echo "ilean:		Remove project build images"
 		  @echo "vlean:		Remove project volumes"
 		  @echo "clean:		Remove project images and volumes"
+		  @echo "uclean:	Remove created project user"
 		  @echo "re:		Run clean and build command to re make the project from scratch"
-
 
 version	: ## Print services versions
 		  @echo "Services versions"
@@ -50,6 +57,7 @@ version	: ## Print services versions
 		  @echo "alpine version - $(ALPINE_VERSION)"
 		  @echo "nginx version - $(NGINX_VERSION)"
 		  @echo "wordpress version - $(WORDPRESS_VERSION)"
+		  @echo "mariadb version - $(MARIADB_VERSION)"
 
 variable: ## Print project variables
 		  @echo "Project variables"
@@ -58,21 +66,31 @@ variable: ## Print project variables
 		  @echo "MYSQL_ROOT_PASSWORD - $(MYSQL_ROOT_PASSWORD)"
 		  @echo "MYSQL_USER - $(MYSQL_USER)"
 		  @echo "MYSQL_PASSWORD - $(MYSQL_PASSWORD)"
+		  @echo "MYSQL_ADMIN - $(MYSQL_ADMIN)"
+		  @echo "MYSQL_ADMIN_PASSWORD - $(MYSQL_ADMIN_PASSWORD)"
+		  @echo ""
+		  @echo "WP_ADMIN - $(WP_ADMIN)"
+		  @echo "WP_ADMIN_PASSWORD - $(WP_ADMIN_PASSWORD)"
+		  @echo "WP_ADMIN_EMAIL - $(WP_ADMIN_EMAIL)"
 
 setup	: ## Update docker-compose installation
-		  -sudo adduser $(LOGIN)
-		  sudo usermod -aG docker $(LOGIN)
-		  sudo usermod -aG docker $$USER
 		  sudo service nginx stop
-		  sudo curl -L "https://github.com/docker/compose/releases/download/$(COMPOSE_VERSION)/docker-compose-$$(uname -s)-$$(uname -m)" -o /usr/local/bin/docker-compose
+		  -sudo adduser $(LOGIN)
+		  sudo usermod -aG docker $$USER
+		  sudo usermod -aG sudo $(LOGIN)
+		  sudo usermod -aG docker $(LOGIN)
+		  sudo mkdir -p $(WORDPRESS_FILES) $(WORDPRESS_DATABASE)
+		  sudo curl -Lo /usr/local/bin/docker-compose "https://github.com/docker/compose/releases/download/$(COMPOSE_VERSION)/docker-compose-$$(uname -s)-$$(uname -m)"
 		  sudo chmod +x /usr/local/bin/docker-compose
+		  @sudo /bin/bash -c 'if ! grep "127.0.0.1 $(LOGIN).42.fr" /etc/hosts; then echo "127.0.0.1 $(LOGIN).42.fr" >> /etc/hosts; fi'
+		  su $(LOGIN)
 
 build	: ## Build the project with docker-compose
-		  sudo mkdir -p $(WORDPRESS_FILES) $(WORDPRESS_DATABASE)
 		  $(DOCKER_COMPOSE) build 
 
 up		: ## Starts services containers
 		  $(DOCKER_COMPOSE) up -d
+		  -docker exec wordpress /wp_cli_install.sh
 
 down	: ## Remove services
 		  $(DOCKER_COMPOSE) down
@@ -95,8 +113,11 @@ vclean	: ## Remove docker volumes
 
 clean	: iclean vclean
 		  -sudo rm -rf /home/$(LOGIN)/data
-		  -sudo userdel lchapren
+
+uclean	: ## Remove project user
+		  sudo userdel $(LOGIN)
+		  sudo rm -rf /home/$(LOGIN)
 
 re		: clean build
 
-.PHONY	: all build help version setup up down stop ps iclean vclean clean re
+.PHONY	: all build help version setup up down stop ps iclean vclean clean uclean re
