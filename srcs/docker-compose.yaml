@@ -17,10 +17,9 @@ services:
     image: nginx:inception
     container_name: nginx
     extra_hosts: 
-      - lchapren.42.fr:127.0.0.1
+      - ${LOGIN}.42.fr:127.0.0.1
     restart: always
     ports:
-      - "80:80"
       - "443:443"
     networks:
       - inception
@@ -42,11 +41,11 @@ services:
     image: wordpress:inception
     container_name: wordpress
     environment:
+      LOGIN: ${LOGIN}
       WORDPRESS_DB_HOST: mariadb
       WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
       WORDPRESS_DB_USER: ${MYSQL_USER}
       WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
-      LOGIN: ${LOGIN}
       WP_ADMIN: ${WP_ADMIN}
       WP_ADMIN_PASSWORD: ${WP_ADMIN_PASSWORD}
       WP_ADMIN_EMAIL: ${WP_ADMIN_EMAIL}
@@ -76,13 +75,6 @@ services:
         MYSQL_ADMIN_PASSWORD: ${MYSQL_ADMIN_PASSWORD}
     image: mariadb:inception
     container_name: mariadb
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_ADMIN: ${MYSQL_ADMIN}
-      MYSQL_ADMIN_PASSWORD: ${MYSQL_ADMIN_PASSWORD}
     restart: always
     expose:
       - "3306"

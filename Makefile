@@ -73,7 +73,7 @@ variable: ## Print project variables
 		  @echo "WP_ADMIN_PASSWORD - $(WP_ADMIN_PASSWORD)"
 		  @echo "WP_ADMIN_EMAIL - $(WP_ADMIN_EMAIL)"
 
-setup	: ## Update docker-compose installation
+setup	: ## Update docker-compose installation and setting up project
 		  sudo service nginx stop
 		  -sudo adduser $(LOGIN)
 		  sudo usermod -aG docker $$USER
@@ -83,7 +83,7 @@ setup	: ## Update docker-compose installation
 		  sudo curl -Lo /usr/local/bin/docker-compose "https://github.com/docker/compose/releases/download/$(COMPOSE_VERSION)/docker-compose-$$(uname -s)-$$(uname -m)"
 		  sudo chmod +x /usr/local/bin/docker-compose
 		  @sudo /bin/bash -c 'if ! grep "127.0.0.1 $(LOGIN).42.fr" /etc/hosts; then echo "127.0.0.1 $(LOGIN).42.fr" >> /etc/hosts; fi'
-		  su $(LOGIN)
+		  #su $(LOGIN)
 
 build	: ## Build the project with docker-compose
 		  $(DOCKER_COMPOSE) build 
