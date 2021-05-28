@@ -47,7 +47,7 @@ help	: ## Print command manual
 		  @echo "ilean:		Remove project build images"
 		  @echo "vlean:		Remove project volumes"
 		  @echo "clean:		Remove project images and volumes"
-		  @echo "uclean:	Remove created project user"
+		  @echo "uclean:		Remove created project user"
 		  @echo "re:		Run clean and build command to re make the project from scratch"
 
 version	: ## Print services versions
@@ -75,7 +75,7 @@ variable: ## Print project variables
 
 setup	: ## Update docker-compose installation and setting up project
 		  sudo service nginx stop
-		  -sudo adduser $(LOGIN)
+		  -sudo adduser --gecos "" $(LOGIN)
 		  sudo usermod -aG docker $$USER
 		  sudo usermod -aG sudo $(LOGIN)
 		  sudo usermod -aG docker $(LOGIN)
@@ -113,7 +113,6 @@ vclean	: ## Remove docker volumes
 		  -docker volume rm wordpress_database
 
 clean	: iclean vclean
-		  -sudo rm -rf /home/$(LOGIN)/data
 
 uclean	: ## Remove project user
 		  sudo userdel $(LOGIN)
@@ -121,4 +120,6 @@ uclean	: ## Remove project user
 
 re		: clean build
 
-.PHONY	: all build help version setup up down stop ps iclean vclean clean uclean re
+.PHONY	: all build help version variable \
+		  setup up down stop ps \
+		  iclean vclean clean uclean re
