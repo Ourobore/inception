@@ -15,6 +15,12 @@ wp core install --path=/var/www/wordpress --title=Inception --url=${LOGIN}.42.fr
     --admin_user=${WP_ADMIN} --admin_password=${WP_ADMIN_PASSWORD} \
     --admin_email=${WP_ADMIN_EMAIL} --skip-email
 
+wp user create --path=/var/www/wordpress ${WP_USER} ${WP_USER_EMAIL} \
+    --user_pass=${WP_USER_PASSWORD}
+
 # Removing ENV variables and script
-unset LOGIN WP_ADMIN WP_ADMIN_PASSWORD WP_ADMIN_EMAIL
+unset LOGIN WP_ADMIN WP_ADMIN_PASSWORD WP_ADMIN_EMAIL \
+        WP_USER WP_USER_PASSWORD WP_USER_EMAIL       
 rm wp_cli_install.sh
+
+exec "$@"

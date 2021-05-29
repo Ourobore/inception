@@ -83,7 +83,6 @@ setup	: ## Update docker-compose installation and setting up project
 		  sudo curl -Lo /usr/local/bin/docker-compose "https://github.com/docker/compose/releases/download/$(COMPOSE_VERSION)/docker-compose-$$(uname -s)-$$(uname -m)"
 		  sudo chmod +x /usr/local/bin/docker-compose
 		  @sudo /bin/bash -c 'if ! grep "127.0.0.1 $(LOGIN).42.fr" /etc/hosts; then echo "127.0.0.1 $(LOGIN).42.fr" >> /etc/hosts; fi'
-		  #sudo apt-get install firefox
 		  #su $(LOGIN)
 
 build	: ## Build the project with docker-compose
@@ -91,7 +90,6 @@ build	: ## Build the project with docker-compose
 
 up		: ## Starts services containers
 		  $(DOCKER_COMPOSE) up -d
-		  -docker exec wordpress /wp_cli_install.sh
 
 down	: ## Remove services
 		  $(DOCKER_COMPOSE) down

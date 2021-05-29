@@ -30,7 +30,7 @@ RUN mkdir -p /run/openrc \
     && rc-service mariadb setup \
     && rc-service mariadb start \
     && sh db-setup.sh \
-    && mariadb -u root -password=$MYSQL_ROOT_PASSWORD < db-setup.sql \
+    && mariadb --user=root --password=$MYSQL_ROOT_PASSWORD < db-setup.sql \
     && rm db-setup.sql db-setup.sh
 
 # Enabling mysqld logging

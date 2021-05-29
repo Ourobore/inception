@@ -44,4 +44,6 @@ RUN echo "error_log = /var/log/php7/error.log" >> /etc/php7/php.ini \
     && ln -sf /dev/stderr /var/log/php7/error.log \
     && chmod +x /wp_cli_install.sh
 
+ENTRYPOINT ["/bin/sh", "wp_cli_install.sh"]
+
 CMD ["php-fpm7", "--nodaemonize"]
