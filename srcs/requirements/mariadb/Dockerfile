@@ -33,6 +33,13 @@ RUN mkdir -p /run/openrc \
     && mariadb --user=root --password=$MYSQL_ROOT_PASSWORD < db-setup.sql \
     && rm db-setup.sql db-setup.sh
 
+#RUN mkdir -p /run/mariadb \
+#	&& sh db-setup.sh \
+#	&& mysql_install_db --datadir=/var/lib/mysql \
+#	&& /usr/bin/mysqld --datadir=/var/lib/mysql \
+#    && mariadb --user=root --password=$MYSQL_ROOT_PASSWORD < db-setup.sql \
+#    && rm db-setup.sql db-setup.sh
+
 # Enabling mysqld logging
 RUN ln -sf /dev/stderr /var/lib/mysql/$(hostname).err
 

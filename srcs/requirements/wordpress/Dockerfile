@@ -5,7 +5,6 @@ FROM alpine:${ALPINE_VERSION}
 # Installing tools and wordpress extensions
 RUN apk update && apk add --no-cache \
 	curl \
-	openrc \
     php-fpm \
     php-curl \
     php-dom \
@@ -28,10 +27,10 @@ RUN curl -Lo wordpress_archive https://wordpress.org/wordpress-${WORDPRESS_VERSI
 	&& mv wordpress /var/www
 
 # Setting up php-fpm
-RUN mkdir -p /run/openrc \
-	&& touch /run/openrc/softlevel \
-	&& rc-update add php-fpm7 default \
-	&& mkdir -p /run/php-fmp7
+#RUN mkdir -p /run/openrc \
+#	&& touch /run/openrc/softlevel \
+#	&& rc-update add php-fpm7 default \
+#	&& mkdir -p /run/php-fmp7
 
 # PHP-FPM and wordpress config
 COPY config/www.conf /etc/php7/php-fpm.d/
