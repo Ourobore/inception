@@ -20,12 +20,12 @@ and to stop it:
 $ make stop
 ```
 
-_(See Makefile for more commands, especially for cleaning)_
+_(See the Makefile for more commands, especially for cleaning)_
 
 <br/>
 
 All the necessary files are accessible in the `srcs` folder:
 
-- A `.env` to regroup all variables needed in one place so that these variables are easily editable.
-- A `requirements` folder, subvided by service.
+- A `.env` to regroup all variables (service version, config and secret variables) needed in one place so that they are easily editable.
+- A `requirements` folder, subdivided by service.
 - Each service folder contain a `Dockerfile`, and some config files / scripts if needed.
